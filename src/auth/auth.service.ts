@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -19,10 +19,35 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const jwtPayload = { username: user.username, sub: user.userId };
+    const [at, rt] = await Promise.all([
+      this.jwtService.signAsync(jwtPayload, {
+        secret: process.env.JWT_ACSESS_KEY,
+        expiresIn: '1m',
+      }),
+      this.jwtService.signAsync(jwtPayload, {
+        secret: process.env.JWT_REFRESH_KEY,
+        expiresIn: '2m',
+      }),
+    ]);
+
     return {
-      access_token: this.jwtService.sign(payload),
-      refresh_token: this.jwtService.sign(payload),
+      access_token: at,
+      refresh_token: rt,
     };
+  }
+
+  async refresh(token: string) {
+    try {
+      const jwtPayload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_REFRESH_KEY
+      });
+      return {
+        access_token: this.jwtService.sign(jwtPayload),
+      }
+    }
+    catch (e) {
+      throw new UnauthorizedException();
+    }
   }
 }

@@ -5,16 +5,16 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtAtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromBodyField('token'),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_KEY,
+      secretOrKey: process.env.JWT_ACSESS_KEY,
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: { sub: number, username: string }) {
     return { userId: payload.sub, username: payload.username };
   }
 }

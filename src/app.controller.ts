@@ -30,4 +30,9 @@ export class AppController {
     // console.log(req);
     return this.authService.login(req.user);
   }
+  @Post('test')
+  async getToken(@Request() req) {
+    // console.log(req.body.token);
+    return this.authService.refresh(req.body.token);
+  }
 }
