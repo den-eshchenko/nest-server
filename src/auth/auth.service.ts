@@ -1,10 +1,17 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Registration, RegistrationDocument } from './schemas/registration.schema';
+import { MyMailService } from 'src/mailer/mail.service';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectModel(Registration.name) private RegistrationModel: Model<RegistrationDocument>,
+    private mailService: MyMailService,
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
@@ -18,7 +25,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
+  async autorization(user: any) {
     const jwtPayload = { username: user.username, sub: user.userId };
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(jwtPayload, {
@@ -37,7 +44,19 @@ export class AuthService {
     };
   }
 
+  async registration(user: any) {
+    this.mailService.example();
+    try {
+      const newUser = new this.RegistrationModel(user);
+      await newUser.save();
+      return new HttpException('Registration complete!', HttpStatus.CREATED) 
+    } catch ({ message }) {
+      throw new HttpException(message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   async refresh(token: string) {
+    console.log(token);
     try {
       const jwtPayload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_REFRESH_KEY
@@ -47,6 +66,7 @@ export class AuthService {
       }
     }
     catch (e) {
+      console.log(e);
       throw new UnauthorizedException();
     }
   }

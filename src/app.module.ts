@@ -1,21 +1,41 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
-import { ProductsModule } from './products/products.module';
 import { ConfigModule } from '@nestjs/config';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
-    ProductsModule,
     AuthModule,
+    ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(
       `${process.env.MONGODB_PROTOCOL}://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}`,
     ),
-    ConfigModule.forRoot(),
+    MailerModule.forRoot({
+      // transport: 'smtps://tt02710123@gmail.com:123456789rtk@smtp.gmail.com',
+      transport: {
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT),
+        ignoreTLS: false,
+        secure: false,
+        // sendingRateTTL: 2,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASSWORD,
+        },
+      },
+      defaults: {
+        from: '"nest-modules" <modules@nestjs.com>',
+      },
+      // template: {
+      //   dir: __dirname + '/templates',
+      //   // adapter: new PugAdapter(),
+      //   options: {
+      //     strict: true,
+      //   },
+      // },
+    }),
   ],
-  controllers: [AppController],
+  // controllers: [AppController],
 })
 export class AppModule {}
