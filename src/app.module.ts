@@ -3,6 +3,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+
+console.log('__dirname ', __dirname + '\\templates');
 
 @Module({
   imports: [
@@ -26,6 +29,13 @@ import { MailerModule } from '@nestjs-modules/mailer';
       },
       defaults: {
         from: '"nest-modules" <modules@nestjs.com>',
+      },
+      template: {
+        dir: __dirname + '/templates',
+        adapter: new EjsAdapter(),
+        options: {
+          strict: true,
+        },
       },
       // template: {
       //   dir: __dirname + '/templates',
