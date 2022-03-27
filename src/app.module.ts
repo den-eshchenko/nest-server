@@ -5,8 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 
-console.log('__dirname ', __dirname + '\\templates');
-
 @Module({
   imports: [
     AuthModule,
@@ -21,7 +19,6 @@ console.log('__dirname ', __dirname + '\\templates');
         port: Number(process.env.SMTP_PORT),
         ignoreTLS: false,
         secure: false,
-        // sendingRateTTL: 2,
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASSWORD,
@@ -34,16 +31,9 @@ console.log('__dirname ', __dirname + '\\templates');
         dir: __dirname + '/templates',
         adapter: new EjsAdapter(),
         options: {
-          strict: true,
+          strict: false,
         },
       },
-      // template: {
-      //   dir: __dirname + '/templates',
-      //   // adapter: new PugAdapter(),
-      //   options: {
-      //     strict: true,
-      //   },
-      // },
     }),
   ],
   // controllers: [AppController],

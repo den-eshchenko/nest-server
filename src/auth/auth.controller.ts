@@ -1,11 +1,12 @@
 import {
-  Request,
   Post,
   UseGuards,
   Controller,
+  Body,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
+import { RefreshToken, User, UserRegistration } from './types';
 
 @Controller('auth')
 export class AuthController {
@@ -13,18 +14,18 @@ export class AuthController {
 
   @UseGuards(AuthGuard('pass'))
   @Post('autorization')
-  async autorization(@Request() req) {
-    console.log(req.body);
-    return this.authService.autorization(req.body);
+  async autorization(@Body() body: User) {
+    console.log('autorizationReq ', body);
+    return this.authService.autorization(body);
   }
   @Post('registration')
-  async registration(@Request() req) {
-    console.log(req.body);
-    return this.authService.registration(req.body);
+  async registration(@Body() body: UserRegistration) {
+    console.log('registrationReq ', body);
+    return this.authService.registration(body);
   }
-  @Post('refresh')
-  async refresh(@Request() req) {
-    console.log(req.body);
-    return this.authService.refresh(req.body.token);
+  @Post('refresh-accessToken')
+  async refresh(@Body() body: RefreshToken) {
+    console.log('refresh-accessTokenReq ', body);
+    return this.authService.refresh(body.refresh_token);
   }
 }
