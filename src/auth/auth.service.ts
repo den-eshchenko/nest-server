@@ -45,11 +45,12 @@ export class AuthService {
   }
 
   async registration(user: UserRegistration) {
-    this.mailService.example(user);
+    const responseMail = await this.mailService.confirmRegistration(user);
+    
     try {
       const newUser = new this.RegistrationModel(user);
       await newUser.save();
-      return new HttpException('Registration complete!', HttpStatus.CREATED);
+      return new HttpException(responseMail, HttpStatus.CREATED);
     } catch ({ message }) {
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }

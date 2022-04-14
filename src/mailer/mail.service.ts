@@ -7,8 +7,8 @@ import { UserRegistration } from 'src/auth/types';
 export class MyMailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  public example(user: UserRegistration) {
-    this.mailerService
+  public async confirmRegistration(user: UserRegistration) {
+    return await this.mailerService
       .sendMail({
         to: user.email,
         from: 'noreply@nestjs.com',
@@ -19,13 +19,12 @@ export class MyMailService {
           username: user.username,
         },
       })
-      .then((e) => { console.log(e) })
+      .then(() => 'Сheck your email!')
       .catch((e) => {
-        console.log(e);
-        // throw new HttpException(
-        //   `Ошибка работы почты: ${JSON.stringify(e)}`,
-        //   HttpStatus.UNPROCESSABLE_ENTITY,
-        // );
+        throw new HttpException(
+          `Mail error: ${JSON.stringify(e)}`,
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
       });
 
   }

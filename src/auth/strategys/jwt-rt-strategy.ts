@@ -13,8 +13,4 @@ export class JwtRtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
       secretOrKey: process.env.JWT_REFRESH_KEY,
     });
   }
-
-  async validate(payload: { sub: number, username: string }) {
-    return payload;
-  }
 }
