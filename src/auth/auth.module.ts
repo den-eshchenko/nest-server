@@ -9,7 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Registration, RegistrationSchema } from './schemas/registration.schema';
 import { JwtStrategy } from './strategys/jwt.strategy';
 import { MyMailModule } from 'src/mailer/mail.module';
-import { JwtRtStrategy } from './strategys/jwt-rt-strategy';
+import { JwtRtStrategy } from './strategys/jwt-rt.strategy';
 @Module({
   imports: [
     UsersModule,
