@@ -45,8 +45,8 @@ export class AuthService {
   }
 
   async registration(user: UserRegistration) {
-    const responseMail = await this.mailService.confirmRegistration(user);
-    
+    // const responseMail = await this.mailService.confirmRegistration(user);
+    const responseMail = "Sucsess";
     try {
       const newUser = new this.RegistrationModel(user);
       await newUser.save();
@@ -68,5 +68,9 @@ export class AuthService {
     catch (e) {
       throw new UnauthorizedException();
     }
+  }
+
+  async createRole(user: string) {
+    console.log(user);
   }
 }
