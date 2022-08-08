@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategys/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
@@ -12,7 +11,6 @@ import { MyMailModule } from 'src/mailer/mail.module';
 import { JwtRtStrategy } from './strategys/jwt-rt.strategy';
 @Module({
   imports: [
-    UsersModule,
     PassportModule,
     MyMailModule,
     JwtModule.register({

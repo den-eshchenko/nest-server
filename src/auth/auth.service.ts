@@ -1,26 +1,24 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Registration, RegistrationDocument } from './schemas/registration.schema';
-import { MyMailService } from 'src/mailer/mail.service';
+// import { MyMailService } from 'src/mailer/mail.service';
 import { User, UserRegistration } from './types';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(Registration.name) private RegistrationModel: Model<RegistrationDocument>,
-    private mailService: MyMailService,
-    private usersService: UsersService,
+    // private mailService: MyMailService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(username: string, password: string) {
-    const user = await this.usersService.findOne(username);
+    const allUsers = await this.RegistrationModel.find().exec();
+    const user = allUsers.find((user) => user.username === username);
     if (user && user.password === password) {
-      const { password, ...result } = user;
-      return result;
+      return user;
     }
     return null;
   }

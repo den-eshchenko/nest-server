@@ -4,6 +4,9 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { EventsModule } from './events/events.gateway';
+import { FileModule } from './file/file.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -13,7 +16,6 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
       `${process.env.MONGODB_PROTOCOL}://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}`,
     ),
     MailerModule.forRoot({
-      // transport: 'smtps://tt02710123@gmail.com:123456789rtk@smtp.gmail.com',
       transport: {
         host: process.env.SMTP_HOST,
         port: Number(process.env.SMTP_PORT),
@@ -35,7 +37,9 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
         },
       },
     }),
+    UsersModule,
+    EventsModule,
+    FileModule,
   ],
-  // controllers: [AppController],
 })
 export class AppModule {}

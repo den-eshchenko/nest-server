@@ -16,7 +16,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(AuthGuard('pass'))
-  @Post('autorization')
+  @Post('authorization')
   async autorization(@Body() body: User) {
     console.log('autorizationReq ', body);
     return this.authService.autorization(body);
@@ -29,12 +29,12 @@ export class AuthController {
   }
 
   @Post('refresh-accessToken')
-  // @Roles('admin')
   async refresh(@Body() body: RefreshToken) {
     console.log('refresh-accessTokenReq ', body);
     return this.authService.refresh(body.refresh_token);
   }
 
+  // @Roles('admin') // вешает метадату с admin - проверка идет через guard на класс
   // @Post('createRole')
   // async createRole(@Body() body: UserRegistration) {
   //   console.log('registrationReq ', body);

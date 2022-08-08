@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Registration, RegistrationDocument } from 'src/auth/schemas/registration.schema';
 
 export type User = {
   username: string;
@@ -7,16 +10,12 @@ export type User = {
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: process.env.USER_LOGIN,
-      password: process.env.USER_PASSWORD,
-    },
-  ];
+  constructor(
+    @InjectModel(Registration.name) private RegistrationModel: Model<RegistrationDocument>,
+  ) {}
 
-  async findOne(username: string): Promise<User | undefined> {
-    console.log(username);
-    return this.users.find((user) => user.username === username);
+  async getAllUsers() {
+    const allUsers = await this.RegistrationModel.find().exec();
+    return allUsers;
   }
 }
